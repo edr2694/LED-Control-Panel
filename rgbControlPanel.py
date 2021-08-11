@@ -54,25 +54,35 @@ class RGBControlPanel:
         self.underglowChannel.button.config(bg="#363636", bd=10, fg="white")
         self.underglowChannel.button.grid(row=0,column=2, sticky='nesw')
 
-        self.redSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50, bg="#363636", fg="white", troughcolor="red", repeatdelay=100, repeatinterval=35, command=lambda: self.updateSlider(self.redSlider))
+        self.redSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50,
+            bg="#363636", fg="white", troughcolor="red", repeatdelay=100, repeatinterval=35,
+            command=lambda pos: self.sliderCB("red", pos))
         self.redSlider.grid(row=1, column=0, sticky='news')
 
-        self.greenSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50, bg="#363636", fg="white", troughcolor="green", repeatdelay=100, repeatinterval=35, command=lambda: self.updateSlider(self.redSlider))
+        self.greenSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50,
+            bg="#363636", fg="white", troughcolor="green", repeatdelay=100, repeatinterval=35,
+            command=lambda pos: self.sliderCB("green", pos))
         self.greenSlider.grid(row=2, column=0, sticky='nesw')
 
-        self.blueSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50, bg="#363636", fg="white", troughcolor="blue", repeatdelay=100, repeatinterval=35, command=lambda: self.updateSlider(self.redSlider))
+        self.blueSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50,
+            bg="#363636", fg="white", troughcolor="blue", repeatdelay=100, repeatinterval=35,
+            command=lambda pos: self.sliderCB("blue", pos))
         self.blueSlider.grid(row=3, column=0, sticky='nesw')
 
         self.speedLabel = Label(self.window, text="Animation Speed", fg="white", bg="#363636", font=("Conduit ITC",24))
         self.speedLabel.grid(row=4, column=0, sticky='nesw')
 
-        self.speedSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50, bg="#363636", fg="white", troughcolor="black", repeatdelay=100, repeatinterval=35, command=lambda: self.updateSlider(self.redSlider))
+        self.speedSlider = Scale(self.window, from_=1, to=100, orient=HORIZONTAL, width=50,
+            bg="#363636", fg="white", troughcolor="black", repeatdelay=100, repeatinterval=35,
+            command=lambda pos: self.sliderCB("speed", pos))
         self.speedSlider.grid(row=5, column=0, sticky='nesw')
 
         self.brightLabel = Label(self.window, text="Brightness", fg="white", bg="#363636", font=("Conduit ITC",24))
         self.brightLabel.grid(row=6, column=0, sticky='nesw')
 
-        self.brightnessSlider = Scale(self.window, from_=0, to=100, orient=HORIZONTAL, width=50, bg="#363636", fg="white",  troughcolor="black", repeatdelay=100, repeatinterval=35, command=lambda: self.updateSlider(self.redSlider))
+        self.brightnessSlider = Scale(self.window, from_=1, to=100, orient=HORIZONTAL, width=50,
+            bg="#363636", fg="white",  troughcolor="black", repeatdelay=100, repeatinterval=35,
+            command=lambda pos: self.sliderCB("brightness", pos))
         self.brightnessSlider.grid(row=7, column=0, sticky='nesw')
 
         self.botBtnFrame = Frame(self.window)
@@ -105,14 +115,36 @@ class RGBControlPanel:
             if (chan.enabled):
                 chan.button.config(fg="white", relief=SUNKEN, activeforeground="white", bg='#363636')
 
+        self.channelButtonPress(self.footwellChannel.button)
+
         self.window.mainloop()
 
 #    def switchActiveChannel(self, channel):
 #        # pull last values from file
 #        self.channel.readValues()
 #
-
-#    def sliderCallback(self, slider):
+    def sliderCB(self, slider, pos):
+        if (slider == "red"):
+            prop = "color"
+            val = str(pos) + "," + str(self.activeChannel.green) + "," + str(self.activeChannel.blue)
+            self.activeChannel.red = pos
+        elif (slider == "green"):
+            prop = "color"
+            val = str(self.activeChannel.red) + "," + str(pos) + "," + str(self.activeChannel.blue)
+            self.activeChannel.green = pos
+        elif (slider == "blue"):
+            prop = "color"
+            val = str(self.activeChannel.red) + "," + str(self.activeChannel.green) + "," + str(pos)
+            self.activeChannel.blue = pos
+        elif (slider == "speed"):
+            prop = slider
+            val = pos
+            self.activeChannel.speed = pos
+        elif (slider == "brightness"):
+            prop = slider
+            val = pos
+            self.activeChannel.brightness = pos
+        self.activeChannel.writeProperty(prop, val)
 
     def channelButtonPress(self, inbutton):
         # save values
@@ -123,10 +155,12 @@ class RGBControlPanel:
                     # Button was not previously pressed, we've pressed it once to display the channel
                     chan.buttonState = "activeOff"
                     chan.button.config(fg="red", relief=GROOVE, activeforeground="red", bg='#363636')
-                    # switchActiveChannel(chan)
+                    self.activeChannel.writeAll()
+                    self.activeChannel = chan
                 elif (chan.buttonState == "inactiveOn"):
                     # we're coming back to an already turned on channel
                     chan.buttonState = "activeOn"
+                    self.activeChannel.writeAll()
                     self.activeChannel = chan
                     chan.button.config(fg="red", relief=SUNKEN, activeforeground="red", bg='#363636')
                 elif (chan.buttonState == "activeOff"):
@@ -154,7 +188,12 @@ class RGBControlPanel:
                     chan.button.config(fg="white", relief=RAISED,activeforeground="white", bg='#363636')
                 else: # inactives, state=state, no changes
                     continue
-        #load values for new active channel
+        # set slider values
+        self.redSlider.set(self.activeChannel.red)
+        self.greenSlider.set(self.activeChannel.green)
+        self.blueSlider.set(self.activeChannel.blue)
+        self.speedSlider.set(self.activeChannel.speed)
+        self.brightnessSlider.set(self.activeChannel.brightness)
         self.window.focus_set()
 
 if __name__ == "__main__":

@@ -105,6 +105,17 @@ class RGBChannel:
         self.brightness = int(lines[4])
         self.qsIndex = int(lines[5])
 
+    def writeAll(self):
+        lines =[("enabled" if self.enabled else "disabled"),
+                str(self.state),
+                (str(str(self.red) + "," + str(self.green) + "," + str(self.blue))),
+                str(self.speed),
+                str(self.brightness),
+                str(self.qsIndex)]
+        f = open(self.stateFile,'w')
+        f.writelines("%s\n" % line for line in lines)
+        f.close()
+
     def enableChannel(self):
         self.enabled = True
         self.writeProperty("enable", "enabled")
