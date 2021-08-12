@@ -139,6 +139,9 @@ class RGBChannel:
         if (self.colorIndex >= len(self.colorList)):
             self.colorIndex=0
         self.writeProperty("qscolor", str(self.colorIndex))
+        self.red = self.colorList[self.colorIndex].red
+        self.green = self.colorList[self.colorIndex].green
+        self.blue = self.colorList[self.colorIndex].blue
 
     def setSpeed(self, value):
         self.speed = value

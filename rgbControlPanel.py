@@ -90,7 +90,7 @@ class RGBControlPanel:
         self.botBtnFrame.columnconfigure((0,1,2,3,4), weight=1)
         self.botBtnFrame.grid(row=8, column=0, sticky='nesw')
 
-        self.sqsBtn = Button(self.botBtnFrame, text="Solid Quick \nSelect", font=("Conduit ITC",32))
+        self.sqsBtn = Button(self.botBtnFrame, text="Solid Quick \nSelect", font=("Conduit ITC",32), command=self.qsButtonPress)
         self.sqsBtn.config(bg="#363636", bd=10, fg="white")
         self.sqsBtn.grid(row=0, column=0, sticky='nesw')
 
@@ -195,6 +195,18 @@ class RGBControlPanel:
         self.speedSlider.set(self.activeChannel.speed)
         self.brightnessSlider.set(self.activeChannel.brightness)
         self.window.focus_set()
+
+    def qsButtonPress(self):
+        self.activeChannel.cycleQSColors()
+        self.sqsBtn.config(fg="white", relief=SUNKEN, activeforeground="white", bg='#363636')
+        self.solidBtn.config(fg="white", relief=RAISED, activeforeground="white", bg='#363636')
+        self.breathBtn.config(fg="white", relief=RAISED, activeforeground="white", bg='#363636')
+        self.flashBtn.config(fg="white", relief=RAISED, activeforeground="white", bg='#363636')
+        self.spectrumBtn.config(fg="white", relief=RAISED, activeforeground="white", bg='#363636')
+        self.redSlider.set(self.activeChannel.red)
+        self.greenSlider.set(self.activeChannel.green)
+        self.blueSlider.set(self.activeChannel.blue)
+        print(str(self.activeChannel.red) + "," + str(self.activeChannel.green) + "," + str(self.activeChannel.blue))
 
 if __name__ == "__main__":
     red = RGBColor("red", 255, 0, 0)
