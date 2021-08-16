@@ -60,7 +60,6 @@ class RGBChannel:
         self.qsIndex = int(lines[5])
         self.button = None
         self.colorList=colorList
-        self.colorIndex=0
         if (self.enabled):
             self.buttonState = "inactiveOn"
         else:
@@ -69,7 +68,6 @@ class RGBChannel:
     def writeProperty(self, prop, value):
         with open(self.stateFile) as f:
             lines = f.read().splitlines()
-        f.close()
         index = 0
         if (prop == "enable"):
             index = 0
@@ -135,13 +133,13 @@ class RGBChannel:
          self.writeProperty(color, str(str(red) + "," + str(green) + "," + str(blue)))
 
     def cycleQSColors(self):
-        self.colorIndex = self.colorIndex + 1
-        if (self.colorIndex >= len(self.colorList)):
-            self.colorIndex=0
-        self.writeProperty("qscolor", str(self.colorIndex))
-        self.red = self.colorList[self.colorIndex].red
-        self.green = self.colorList[self.colorIndex].green
-        self.blue = self.colorList[self.colorIndex].blue
+        self.qsIndex = self.qsIndex + 1
+        if (self.qsIndex >= len(self.colorList)):
+            self.qsIndex=0
+        self.writeProperty("qscolor", str(self.qsIndex))
+        self.red = self.colorList[self.qsIndex].red
+        self.green = self.colorList[self.qsIndex].green
+        self.blue = self.colorList[self.qsIndex].blue
 
     def setSpeed(self, value):
         self.speed = value
@@ -149,4 +147,4 @@ class RGBChannel:
 
     def setBrightness(self, value):
         self.brightness = value
-        self.writeProperty(self, str(value))
+        self.writeProperty("brightness", str(value))
