@@ -1,6 +1,6 @@
 from tkinter import *
 import os.path
-from rgbClasses import RGBColor, RGBChannel
+from rgbClasses import RGBColor, RGBChannel, colors
 
 # state file layout:
 # enabled/disabled
@@ -305,16 +305,6 @@ class RGBControlPanel:
         self.activeChannel.writeAll()
 
 if __name__ == "__main__":
-    red = RGBColor("red", 100, 0, 0)
-    green = RGBColor("green", 0, 100, 0)
-    blue = RGBColor("blue", 0, 0, 100)
-    yellow = RGBColor("yellow", 100, 100, 0)
-    pink = RGBColor("pink", 100, 0, 100)
-    purple = RGBColor("purple", 50, 0, 100)
-    teal = RGBColor("teal", 0, 100, 100)
-    orange = RGBColor("orange", 100, 50, 0)
-    white = RGBColor("white", 100, 100, 100)
 
-    newColors = [red, green, blue, yellow, pink, purple, teal, orange]
 
-    controlPanel = RGBControlPanel(name="controls", colorList=newColors)
+    controlPanel = RGBControlPanel(name="controls", colorList=colors)

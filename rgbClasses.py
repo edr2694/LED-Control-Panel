@@ -1,7 +1,6 @@
 from tkinter import *
 import os.path
 
-
 fileLoc = ""
 # example file below
 """
@@ -148,3 +147,16 @@ class RGBChannel:
     def setBrightness(self, value):
         self.brightness = value
         self.writeProperty("brightness", str(value))
+
+
+red = RGBColor("red", 100, 0, 0)
+green = RGBColor("green", 0, 100, 0)
+blue = RGBColor("blue", 0, 0, 100)
+yellow = RGBColor("yellow", 100, 100, 0)
+pink = RGBColor("pink", 100, 0, 100)
+purple = RGBColor("purple", 50, 0, 100)
+teal = RGBColor("teal", 0, 100, 100)
+orange = RGBColor("orange", 100, 50, 0)
+white = RGBColor("white", 100, 100, 100)
+
+colors = [red, green, blue, yellow, pink, purple, teal, orange]
